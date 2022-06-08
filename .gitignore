@@ -1,0 +1,7 @@
+*.png
+*.zip
+app/venv
+app/.idea
+app/1
+app/__pycache__
+app/pomiary/wykresy
