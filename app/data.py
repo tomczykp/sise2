@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def loadTrainData(sala_nr):
-    return loadData("_stat", sala_nr, 225, "AG,AH,AJ,AK")
+    return loadData("_stat", sala_nr, 3, "AG,AH,AJ,AK")
 
 
 def loadDynamicData(sala_nr):

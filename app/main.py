@@ -5,8 +5,8 @@ from data import loadTrainData, loadDynamicData, loadRandData
 def main():
     d = loadTrainData(8)
     rnd = loadDynamicData(8)
-    net = Network(data=d, layers=2, neurons=20, hidNeurons=10)
-    net.train()
+    net = Network(layers_num=2, neurons_num=20, io_num=2, rate=0.5, activation_function=lambda x: x)
+    net.train(d)
     net.show()
 
 

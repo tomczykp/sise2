@@ -1,16 +1,25 @@
+from layers import HiddenLayer, InputLayer, OutputLayer
+
+
 class Network:
 
-    def __init__(self, data, layers, neurons, hidNeurons):
-        self.data = data
-        self.layers_num = layers
-        self.in_neu_num = neurons
-        self.hid_neu_num = hidNeurons
+    def __init__(self, layers_num, neurons_num, activation_function, io_num=2, rate=0.5):
+        assert io_num > 0 and neurons_num > 0 and layers_num > 0
+        self.layers = []
 
-    def train(self):
-        print(f"Data: {self.data}")
+        self.layers.append(InputLayer(io_num, 1, rate, activation_function))
+
+        self.layers.append(HiddenLayer(neurons_num, io_num, rate, activation_function))
+        for i in range(layers_num - 1):
+            self.layers.append(HiddenLayer(neurons_num, neurons_num, rate, activation_function))
+
+        self.layers.append(OutputLayer(io_num, neurons_num, rate, activation_function))
+
+    def train(self, data):
+        pass
 
     def show(self):
         print(self)
 
     def __repr__(self):
-        return f"<NeuralNetwork data={len(self.data)}, layers={self.layers_num}>"
+        return f"<NeuralNetwork layers_num={len(self.layers)} layers={self.layers}>"
