@@ -7,8 +7,16 @@ class Layer:
 		assert weight_num > 0 and neurons_num > 0
 		self.neurons = []
 		self.activation_function = fun
+		self.learning_rate = learn_rate
 		for i in range(neurons_num):
-			self.neurons.append(Neuron(weight_num=weight_num, rate=learn_rate, fun=self.activation_function))
+			self.neurons.append(Neuron(weight_num=weight_num, fun=self.activation_function))
+
+	def values(self, xs):
+		t = []
+		for n in self.neurons:
+			t.append(n.run(xs))
+		assert len(t) == len(self.neurons)
+		return t
 
 
 class HiddenLayer(Layer):

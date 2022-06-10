@@ -1,11 +1,12 @@
 from network import Network
-from data import loadTrainData, loadDynamicData, loadRandData
+from data import loadTrainData
+from numpy import exp
 
 
 def main():
     d = loadTrainData(8)
-    rnd = loadDynamicData(8)
-    net = Network(layers_num=2, neurons_num=20, io_num=2, rate=0.5, activation_function=lambda x: x)
+    f = lambda x: 1/(1 + exp(-x))
+    net = Network(layers_num=2, neurons_num=20, io_num=2, rate=0.5, activation_function=f)
     net.train(d)
     net.show()
 
