@@ -4,6 +4,8 @@ from numpy import asarray
 
 
 klasy = {}
+
+
 def wyznacz_klasy(data):
 	index = 0
 	for xs in data:
@@ -14,11 +16,13 @@ def wyznacz_klasy(data):
 			index += 1
 	assert len(klasy) == ILOSC_PKT
 
+
 def prepare_data(data):
 	data = data.values.tolist()
 	shuffle(data)
 	wyznacz_klasy(data)
-	return [[ asarray((xs[0], xs[1])), asarray(target(xs[2], xs[3]))] for xs in data]
+	return [[asarray((xs[0], xs[1])), asarray(target(xs[2], xs[3]))] for xs in data]
+
 
 def target(x, y):
 	index = klasy[f"{int(x)}x{int(y)}"]

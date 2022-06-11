@@ -2,6 +2,7 @@ from layers import HiddenLayer, InputLayer, OutputLayer
 from data import ILOSC_PKT
 import matplotlib.pyplot as plt
 from random import shuffle
+import numpy as np
 
 
 class Network:
