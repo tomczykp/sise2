@@ -3,19 +3,17 @@ from random import uniform
 
 class Neuron:
 
-	def __init__(self, weight_num, fun):
+	def __init__(self, weight_num):
 		self.weights = []
-		for x in range(weight_num):
+		for x in range(weight_num + 1):
 			self.weights.append(uniform(-0.5, 0.5))
-
-		self.activation_function = fun
 
 	def run(self, xs):
 		suma = 0
 		for x, w in zip(xs, self.weights):
 			suma += x*w
 
-		return self.activation_function(suma)
+		return suma + self.weights[-1]
 
 	def update(self, xs):
 		pass
