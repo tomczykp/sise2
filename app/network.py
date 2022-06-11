@@ -1,4 +1,20 @@
 from layers import HiddenLayer, InputLayer, OutputLayer
+import matplotlib.pyplot as plt
+from data import ILOSC_PKT
+
+
+def plot(data):
+    print(data)
+    plt.plot(
+            list(map(lambda t: t[0], data)),
+            list(map(lambda t: t[1], data)), 'b*')
+    plt.plot(
+            list(map(lambda t: t[2], data)),
+            list(map(lambda t: t[3], data)), 'rx')
+    plt.title("DANE")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.show()
 
 
 class Network:
@@ -8,6 +24,7 @@ class Network:
         self.layers = []
         self.io_num = io_num
         self.learning_rate = rate
+        self.klasy = {}
 
         self.layers.append(InputLayer(io_num, io_num, rate, activation_function))
 
@@ -15,25 +32,42 @@ class Network:
         for i in range(layers_num - 1):
             self.layers.append(HiddenLayer(neurons_num, neurons_num, rate, activation_function))
 
-        self.layers.append(OutputLayer(io_num, neurons_num, rate, activation_function))
+        self.layers.append(OutputLayer(ILOSC_PKT, neurons_num, rate, activation_function))
 
     def train(self, data):
+        data = data.values.tolist()
+        for x in data:
+            print(x)
+        return 1
 
-        for xs in data.values.tolist():
-            value = self.single_run([xs[0], xs[1]])
-            blad = self.blad_globalny(value, [xs[2], xs[3]])
+        self.wyznacz_klasy(data)
+        data = [[xs[0], xs[1], ] for xs in data]
+        print(self.klasy)
+        print(len(self.klasy))
+        return 1
+        values, blad = [], []
 
-    def single_run(self, xs):
-        for layer in self.layers:
-            xs = layer.values(xs)
+        for xs in data:  # dla kazdego t z T
+            netX = [xs[:-1]]
+            for layer in self.layers:
+                netX.append(layer.values(netX[-1]))
 
-        return xs
+            blad.append(self.wyznacz_blad(values[-1], xs[-1]))
 
-    def blad_globalny(self, uzyskane, wzorowe):
+    def wyznacz_klasy(self, data):
+        index = 0
+        for xs in data:
+            key = f"{int(xs[2])}x{int(xs[3])}"
+            tmp = self.klasy.get(key)
+            if tmp is None:
+                self.klasy[key] = index
+                index += 1.0
+
+    def wyznacz_blad(self, uzyskane, wzorowe):
         suma = 0
         for x, y in zip(uzyskane, wzorowe):
             suma += (x - y)**2
-        return self.learning_rate*suma/2
+        return suma/2
 
     def show(self):
         print(self)
