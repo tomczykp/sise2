@@ -13,8 +13,12 @@ class Layer:
 
 	def values(self, xs):
 		t = []
+		print(F"Cal value of layer: {self} for values: {xs}")
 		for n in self.neurons:
-			t.append(n.run(xs))
+			tmp = n.run(xs)
+			print(f"neuron: {tmp}")
+			t.append(tmp)
+
 		assert len(t) == len(self.neurons)
 		return t
 
@@ -34,6 +38,16 @@ class InputLayer(Layer):
 	def __repr__(self):
 		return F"<InputLayer neurons={len(self.neurons)} weights_per_neuron={len(self.neurons[0].weights)}>"
 
+	def values(self, xs):
+		t = []
+		print(F"Cal value of layer: {self} for values: {xs}")
+		for n in self.neurons:
+			tmp = n.run(xs)
+			print(f"neuron: {tmp}")
+			t.append(tmp)
+
+		assert len(t) == len(self.neurons)
+		return t
 
 class OutputLayer(Layer):
 	def __init__(self, neurons_num, weight_num, learn_rate, fun):

@@ -1,20 +1,6 @@
 from layers import HiddenLayer, InputLayer, OutputLayer
-import matplotlib.pyplot as plt
 from data import ILOSC_PKT
-
-
-def plot(data):
-    print(data)
-    plt.plot(
-            list(map(lambda t: t[0], data)),
-            list(map(lambda t: t[1], data)), 'b*')
-    plt.plot(
-            list(map(lambda t: t[2], data)),
-            list(map(lambda t: t[3], data)), 'rx')
-    plt.title("DANE")
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.show()
+import matplotlib.pyplot as plt
 
 
 class Network:
@@ -36,23 +22,18 @@ class Network:
 
     def train(self, data):
         data = data.values.tolist()
-        for x in data:
-            print(x)
-        return 1
-
         self.wyznacz_klasy(data)
-        data = [[xs[0], xs[1], ] for xs in data]
-        print(self.klasy)
-        print(len(self.klasy))
-        return 1
+        print(f"klasy: {self.klasy} \nlen: {len(self.klasy)}")
+        plot(data)
+        data = [[xs[0], xs[1], self.klasy[f"{int(xs[2])}x{int(xs[3])}"]] for xs in data]
         values, blad = [], []
 
-        for xs in data:  # dla kazdego t z T
+        for xs in data[0:2]:  # dla kazdego t z T
             netX = [xs[:-1]]
             for layer in self.layers:
                 netX.append(layer.values(netX[-1]))
-
-            blad.append(self.wyznacz_blad(values[-1], xs[-1]))
+            print(f"v: {netX}")
+            blad.append(self.wyznacz_blad(netX[-1], xs[-1]))
 
     def wyznacz_klasy(self, data):
         index = 0
@@ -63,8 +44,10 @@ class Network:
                 self.klasy[key] = index
                 index += 1.0
 
-    def wyznacz_blad(self, uzyskane, wzorowe):
+    def wyznacz_blad(self, uzyskane, index_pkt):
         suma = 0
+        wzorowe = [0]*len(self.klasy)
+        wzorowe[index_pkt] = 1
         for x, y in zip(uzyskane, wzorowe):
             suma += (x - y)**2
         return suma/2
@@ -74,3 +57,17 @@ class Network:
 
     def __repr__(self):
         return f"<NeuralNetwork layers_num={len(self.layers)} layers={self.layers}>"
+
+
+def plot(data):
+    plt.plot(
+            list(map(lambda t: t[0], data)),
+            list(map(lambda t: t[1], data)), 'b*')
+    plt.plot(
+            list(map(lambda t: t[2], data)),
+            list(map(lambda t: t[3], data)), 'rx')
+    plt.title("DANE")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.show()
+
