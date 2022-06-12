@@ -1,8 +1,10 @@
 from random import shuffle
 import pandas as pd
-from numpy import isnan
+from numpy import isnan, min, max
 from json import load, dump
 from os import path
+import matplotlib.pyplot as plt
+
 
 ILOSC_PKT = 225
 filename = "dane"
@@ -36,18 +38,8 @@ def loadData(interfix, sala_nr, end, postfix=""):
 	return data
 
 
-klasy = {}
-
-
-def wyznacz_klasy(data):
-	index = 0
-	for xs in data:
-		key = f"{int(xs[2])}x{int(xs[3])}"
-		tmp = klasy.get(key)
-		if tmp is None:
-			klasy[key] = index
-			index += 1
-	assert len(klasy) == ILOSC_PKT
+def normalize_data(data):
+	return (data - min(data)) / (max(data) - min(data))
 
 
 def prepare_data():
@@ -60,23 +52,41 @@ def prepare_data():
 		return x_train, y_train
 
 	print("DATA NOT IMPORTED .... LOADING FROM ORIGINAL FILES")
-	data = loadTrainData(10)
+	data = loadTrainData(nr_sali)
 	shuffle(data)
-	wyznacz_klasy(data)
 	x_train, y_train = [], []
-	for xs in data:
-		if isnan(xs[0]) or isnan(xs[1]) or isnan(xs[2]) or isnan(xs[3]):
+	xs, ys = [], []
+	xsW, ysW = [], []
+	for t in data:
+		if isnan(t[0]) or isnan(t[1]) or isnan(t[2]) or isnan(t[3]):
 			continue
-		x_train.append([xs[0], xs[1]])
-		y_train.append(target(xs[2], xs[3]))
+		xs.append(t[0])
+		ys.append(t[1])
+		xsW.append(t[2])
+		ysW.append(t[3])
+
+	for x, y in zip(normalize_data(xs), normalize_data(ys)):
+		x_train.append([x, y])
+
+	for x, y in zip(normalize_data(xsW), normalize_data(ysW)):
+		y_train.append([x, y])
 
 	with open(f"x_{filename}{nr_sali}.json", 'w') as file_object:
 		dump(x_train, file_object)
 	with open(f"y_{filename}{nr_sali}.json", 'w') as file_object:
 		dump(y_train, file_object)
+
 	return x_train, y_train
 
 
-def target(x, y):
-	return klasy[f"{int(x)}x{int(y)}"]
-
+def plot(data1, data2=[]):
+	plt.plot(
+			list(map(lambda t: t[0], data1)),
+			list(map(lambda t: t[1], data1)), 'b.')
+	plt.plot(
+			list(map(lambda t: t[0], data2)),
+			list(map(lambda t: t[1], data2)), 'r.')
+	plt.title("")
+	plt.xlabel("Ilość wystąpień")
+	plt.ylabel("Wartość błędu")
+	plt.show()
